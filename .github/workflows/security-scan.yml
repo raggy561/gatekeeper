@@ -1,6 +1,5 @@
 name: Terraform Security Scan
 
-# Run on every push and pull request
 on:
   push:
   pull_request:
@@ -12,16 +11,22 @@ jobs:
     steps:
       - name: Check out the code
         uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
       - name: Install Checkov
         run: pip install checkov
-
       - name: Run Checkov against Terraform
         run: checkov --directory . --framework terraform --compact
-        # Checkov exits non-zero when a check fails,
-        # which fails this job -> the "gate" that blocks insecure IaC.
+
+  tfsec:
+    name: tfsec IaC Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+      - name: Run tfsec
+        uses: aquasecurity/tfsec-action@v1.0.3
+        with:
+          working_directory: .
