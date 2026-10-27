@@ -54,7 +54,7 @@ Not every finding gets "fixed." Real security work means deciding, per finding, 
 - **Remediated** — genuine exposures (public SSH ingress) are fixed outright.
 - **Accepted with a reason** — enterprise-grade controls out of scope for a lab (customer-managed KMS keys, cross-region replication, access logging) are suppressed with an inline, justified comment:
   ```hcl
-  #checkov:skip=CKV_AWS_145:SSE-S3 (AES256) is sufficient for this lab; no CMK needed
+  #checkov:skip=CKV_AWS_145:SSE-S3 (AES256) is sufficient for demo; no CMK needed
   #tfsec:ignore:aws-s3-enable-bucket-logging
   ```
 
@@ -124,7 +124,7 @@ tfsec ./examples
 - **Severity threshold** — fail only on HIGH/CRITICAL, report lower severities without breaking the build
 - **PR annotations** — surface findings as inline pull-request comments, not just Actions logs
 - **Secrets scanning** — add gitleaks/trufflehog to catch committed credentials
-- **Wire into Terradome** — run this workflow against the live [Terradome](https://github.com/<your-username>/terradome) landing zone, gating real infra changes
+- **Wire into Terradome** — run this workflow against the live [Terradome](https://github.com/raggy561/terradome) landing zone, gating real infra changes
 - **Promote lab skips to enforced controls** — convert the documented risk acceptances (KMS CMK, access logging, replication) into required checks for a production profile
 
 ---
