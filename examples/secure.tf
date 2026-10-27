@@ -3,6 +3,8 @@
 # Designed to PASS the scan — this is the remediation.
 
 # --- S3: private, versioned, encrypted ---
+# tfsec risk acceptance: access logging to a separate bucket is out of scope here
+#tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "good" {
   # Documented risk acceptances — controls out of scope for a lab demo.
   #checkov:skip=CKV_AWS_145:SSE-S3 (AES256) is sufficient for demo; no CMK needed
@@ -28,6 +30,8 @@ resource "aws_s3_bucket_versioning" "good" {
   }
 }
 
+# tfsec risk acceptance: SSE-S3 (AES256) is sufficient for demo; no CMK needed
+#tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket_server_side_encryption_configuration" "good" {
   bucket = aws_s3_bucket.good.id
   rule {
@@ -49,7 +53,7 @@ resource "aws_security_group" "locked_down" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["203.0.113.0/24"]   # specific range, NOT 0.0.0.0/0
+    cidr_blocks = ["10.0.0.0/24"]   # private admin/VPN range, NOT public internet
   }
 
   egress {
@@ -57,6 +61,8 @@ resource "aws_security_group" "locked_down" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
+    # tfsec risk acceptance: egress to internet on 443 needed for package updates
+    #tfsec:ignore:aws-ec2-no-public-egress-sgr
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
