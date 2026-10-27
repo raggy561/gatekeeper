@@ -40,6 +40,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "good" {
 # --- Security group: SSH restricted to an admin range, not the world ---
 resource "aws_security_group" "locked_down" {
   #checkov:skip=CKV_AWS_382:Egress to internet on 443 needed for package updates
+  #checkov:skip=CKV2_AWS_5:Standalone demo SG; no instance/ENI defined in this example
   name        = "locked-down"
   description = "SSH from a specific admin network only"
 
